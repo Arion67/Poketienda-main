@@ -22,6 +22,7 @@ function Navbar({ cartCount, toggleCart, toggleRocketMode, setSearchQuery, curre
 
         <div className="nav-links">
           <Link to="/">Inicio</Link>
+          <Link to="/admin">Admin</Link>
           <Link to="/contacto">Contacto</Link>
         </div>
 
@@ -37,8 +38,20 @@ function Navbar({ cartCount, toggleCart, toggleRocketMode, setSearchQuery, curre
             </div>
           )}
           
-          <div onClick={toggleRocketMode} style={{cursor: 'pointer'}}>🚀</div>
-          <div onClick={toggleCart} style={{cursor: 'pointer'}}>🛒 <span>{cartCount}</span></div>
+          <button 
+            onClick={toggleRocketMode} 
+            className="btn-rocket"
+            title="Cambiar a Modo Team Rocket"
+          >
+            ⚡
+          </button>
+          <button 
+            onClick={toggleCart}
+            className="btn-cart"
+            title="Abrir carrito de compras"
+          >
+            🛒 <span>{cartCount}</span>
+          </button>
         </div>
       </div>
     </nav>

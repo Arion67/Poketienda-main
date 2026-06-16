@@ -1,17 +1,57 @@
 import { useState, useEffect } from 'react';
 
 function Home({ addToCart, searchQuery }) {
-  // Estado para el slider
+  const [nuevosProductos, setNuevosProductos] = useState(() => {
+    const stored = localStorage.getItem('productos');
+    if (!stored) return [];
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    const stored = localStorage.getItem('productos');
+    if (stored) {
+      try {
+        setNuevosProductos(JSON.parse(stored));
+      } catch {
+        setNuevosProductos([]);
+      }
+    } else {
+      setNuevosProductos([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleStorage = (event) => {
+      if (event.key === 'productos') {
+        if (event.newValue) {
+          try {
+            setNuevosProductos(JSON.parse(event.newValue));
+          } catch {
+            setNuevosProductos([]);
+          }
+        } else {
+          setNuevosProductos([]);
+        }
+      }
+    };
+
+    globalThis.addEventListener('storage', handleStorage);
+    return () => globalThis.removeEventListener('storage', handleStorage);
+  }, []);
+
   const [slide, setSlide] = useState(0);
   useEffect(() => {
-    const interval = setInterval(() => setSlide(s => (s + 1) % 3), 4000);
+    const interval = setInterval(() => setSlide((s) => (s + 1) % 3), 4000);
     return () => clearInterval(interval);
   }, []);
 
-  // Estado para el timer de subasta
   const [tiempo, setTiempo] = useState(9912);
   useEffect(() => {
-    const interval = setInterval(() => setTiempo(t => t > 0 ? t - 1 : 0), 1000);
+    const interval = setInterval(() => setTiempo((t) => (t > 0 ? t - 1 : 0)), 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -19,11 +59,16 @@ function Home({ addToCart, searchQuery }) {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
-    return `${h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+    return `${h}:${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
   };
 
-  // Función para filtrar por nombre (Reemplaza la función filtrarCartas vanilla)
-  const isVisible = (nombre) => nombre.toLowerCase().includes(searchQuery.toLowerCase());
+  const isVisible = (texto) => texto.toLowerCase().includes(searchQuery.toLowerCase());
+  
+  // Filtrar productos por sección
+  const productosOferta = nuevosProductos.filter((p) => p.seccion === 'oferta');
+  const productosSubasta = nuevosProductos.filter((p) => p.seccion === 'subasta');
+  const productosClasico = nuevosProductos.filter((p) => p.seccion === 'clasico');
+  const productosTableros = nuevosProductos.filter((p) => p.seccion === 'tableros');
 
   return (
     <>
@@ -61,7 +106,22 @@ function Home({ addToCart, searchQuery }) {
         </>
       )}
 
-      <section className="banner-color"><h2>Producto Destacado</h2></section>
+      {productosOferta.length > 0 && (
+        <div className="contenedor-cartas">
+          {productosOferta.map((product) => (
+            <article className="carta-box" key={product.id}>
+              <h3 className="nombre-pokemon">{product.nombre}</h3>
+              <img src={product.imagen} alt={product.nombre} />
+              <p>${product.precio.toLocaleString('es-CL')}</p>
+              <button className="btn-comprar" onClick={() => addToCart(product.nombre, product.precio)}>
+                Comprar
+              </button>
+            </article>
+          ))}
+        </div>
+      )}
+
+      <section className="banner-color"><h2>Tableros</h2></section>
       <div className="seccion-flexible">
         {isVisible('Tablero Pro') && (
           <div className="cuadro-central">
@@ -79,6 +139,14 @@ function Home({ addToCart, searchQuery }) {
             <button className="btn-comprar" onClick={() => addToCart('Academia de Combate', 32990)}>Añadir al Carrito</button>
           </div>
         )}
+        {productosTableros.map((product) => (
+          <div className="cuadro-central" key={product.id}>
+            <img src={product.imagen} alt={product.nombre} />
+            <h3 className="nombre-pokemon">{product.nombre}</h3>
+            <p>${product.precio.toLocaleString('es-CL')}</p>
+            <button className="btn-comprar" onClick={() => addToCart(product.nombre, product.precio)}>Añadir al Carrito</button>
+          </div>
+        ))}
       </div>
 
       <section className="banner-color">
@@ -103,6 +171,15 @@ function Home({ addToCart, searchQuery }) {
             <button className="btn-comprar" onClick={() => addToCart('Lote Mew', 30000)}>Pujar</button>
           </article>
         )}
+        {productosSubasta.map((product) => (
+          <article className="carta-box" key={product.id}>
+            <div className="badge-rareza rareza-vmax">Subasta</div>
+            <h3 className="nombre-pokemon">{product.nombre}</h3>
+            <img src={product.imagen} alt={product.nombre} />
+            <p>${product.precio.toLocaleString('es-CL')}</p>
+            <button className="btn-comprar" onClick={() => addToCart(product.nombre, product.precio)}>Pujar</button>
+          </article>
+        ))}
       </div>
 
       <section className="banner-color"><h2>Base Set Clásico</h2></section>
@@ -125,7 +202,16 @@ function Home({ addToCart, searchQuery }) {
             <button className="btn-comprar" onClick={() => addToCart('Charizard', 500000)}>Comprar</button>
           </article>
         )}
+        {productosClasico.map((product) => (
+          <article className="carta-box" key={product.id}>
+            <h3 className="nombre-pokemon">{product.nombre}</h3>
+            <img src={product.imagen} alt={product.nombre} />
+            <p>${product.precio.toLocaleString('es-CL')}</p>
+            <button className="btn-comprar" onClick={() => addToCart(product.nombre, product.precio)}>Comprar</button>
+          </article>
+        ))}
       </div>
+
     </>
   );
 }

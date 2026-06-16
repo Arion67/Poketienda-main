@@ -1,0 +1,60 @@
+const initialProducts = [
+  {
+    id: 'master-collection-box',
+    nombre: 'Master Collection Premium Box',
+    precio: 53990,
+    tipo: 'Colección',
+    imagen: '/images/Set cartas v-union.jpg',
+    seccion: 'oferta',
+  },
+  {
+    id: 'tablero-pro-championship',
+    nombre: 'Tablero Pro Championship',
+    precio: 45990,
+    tipo: 'Accesorio',
+    imagen: '/images/tablero_pokemon_1.jpg',
+    seccion: 'general',
+  },
+  {
+    id: 'academia-de-combate',
+    nombre: 'Academia de Combate',
+    precio: 32990,
+    tipo: 'Accesorio',
+    imagen: '/images/tablero_pokemon_2.png',
+    seccion: 'general',
+  },
+  {
+    id: 'lote-vmax-rainbow',
+    nombre: 'Lote VMAX Rainbow',
+    precio: 25000,
+    tipo: 'Cartas',
+    imagen: '/images/imag subasta 1.jpeg',
+    seccion: 'subasta',
+  },
+  {
+    id: 'lote-mew-ex',
+    nombre: 'Lote Mew EX',
+    precio: 30000,
+    tipo: 'Cartas',
+    imagen: '/images/imag subasta 2.jpg',
+    seccion: 'subasta',
+  },
+  {
+    id: 'pikachu',
+    nombre: 'Pikachu',
+    precio: 40000,
+    tipo: 'Cartas',
+    imagen: '/images/pikachu 1999.jpg',
+    seccion: 'clasico',
+  },
+  {
+    id: 'charizard',
+    nombre: 'Charizard',
+    precio: 120000,
+    tipo: 'Cartas',
+    imagen: '/images/charizard holo.jpg',
+    seccion: 'clasico',
+  },
+];
+
+export default initialProducts;
